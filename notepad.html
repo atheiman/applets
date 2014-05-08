@@ -1,23 +1,51 @@
 <html>
 <script>
+
 function saveDoc() {
-  myDate = new Date();
-  localStorage.saveDate = myDate ;
+  var d = new Date() ;
+  var monthArray = new Array();
+  monthArray[0] = "January"; monthArray[1] = "February"; monthArray[2] = "March"; monthArray[3] = "April";
+  monthArray[4] = "May"; monthArray[5] = "June"; monthArray[6] = "July"; monthArray[7] = "August";
+  monthArray[8] = "September"; monthArray[9] = "October"; monthArray[10] = "November"; monthArray[11] = "December";
+  var month = monthArray[d.getMonth()];
+  var date = d.getDate() ;
+  var hour = d.getHours() ;
+  var timePeriod = "am" ;
+  if (hour>12) {
+    hour -= 12 ;
+    timePeriod = "pm" ;
+  }
+  var minute = d.getMinutes() ;
+  minute = checkTime(minute) ;
+  localStorage.saveString = month+" "+date+" at "+hour+":"+minute+" "+timePeriod ;
   localStorage.notepad = myTextarea.value ;
 }
+
 function loadDoc() {
   if (typeof localStorage.notepad !== "undefined" && localStorage.notepad !== "") {
     // If user has never been here or saved data is blank
     myTextarea.value = localStorage.notepad ;
+    messageDiv.innerHTML = "Loaded text from " + localStorage.saveString ;
   } else {
-    myTextarea.value = "Welcome to Austin Heiman's HTML5 local storage notepad!\nNotes typed here will be automagically saved for next time!\nTest it out by editing me and reloading the page!" ;
+    myTextarea.value = "Welcome to Austin Heiman's HTML5 local storage notepad!\nNotes typed here will be automagically saved for next time!" ;
+    messageDiv.innerHTML = "Your text will be automatically saved." ;
   }
   myTextarea.select() ;
+  // messageDiv.style.opacity=0 ;
+  // messageDiv.style.marginRight="100px";
+  messageDiv.style.right="-130px" ;
 }
+
+function checkTime(i) {
+    if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+
 </script>
 <style>
 body {
   margin:0px;
+  /*overflow:hidden;*/
 }
 textarea {
   resize:none;
@@ -30,8 +58,29 @@ textarea {
   color:#fff;
   border:0px;
 }
+div {
+  position:absolute;
+  background-color:#c50;
+  bottom:20px;
+  right:20px;
+  padding:10px;
+  color:#000;
+  font-family:'courier new';
+  font-size: 1.3em;
+  border-radius: .5em ;
+  cursor:default;
+  transition: right 3s;
+  /*transition: margin-right 2s;*/
+  /*transition: right 1s linear 2s;*/
+  /*transition: opacity 3s;*/
+}
+/*div:hover
+{
+margin-right: 100px;
+}*/
 </style>
 <body onload="loadDoc()">
-<textarea id="myTextarea" onkeyup="saveDoc()" onchange="saveDoc()" onmouseout="saveDoc()" onload="var myTextarea = document.getElementById('myTextarea')"></textarea>
+<textarea id="myTextarea" onkeyup="saveDoc()" onmouseout="saveDoc()" onblur="saveDoc()" onload="var myTextarea = this; loadDoc();"></textarea>
+<div id="messageDiv" onload="var messageDiv = this" display="none"></div>
 </body>
 </html>
