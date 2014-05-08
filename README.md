@@ -1,3 +1,3 @@
 applets
 =======
-notepad.html - copy and paste the content into your url!
+notepad.html - notepad using JS / HTML5 localStorage
