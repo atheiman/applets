@@ -1,55 +1,38 @@
 <html>
 <script>
 function saveDoc() {
+  myDate = new Date();
+  localStorage.saveDate = myDate ;
   localStorage.notepad = myTextarea.value ;
-  messageDiv.innerHTML = "Notes Saved!" ;
 }
 function loadDoc() {
-  if (typeof localStorage.notepad !== "undefined") {
+  if (typeof localStorage.notepad !== "undefined" && localStorage.notepad !== "") {
     myTextarea.value = localStorage.notepad ;
-    messageDiv.innerHTML = "Welcome back!" ;
   } else {
-    messageDiv.innerHTML = "Welcome to my HTML5 local storage notepad! Write your notes above and click save to keep them for next time!" ;
+    myTextarea.value = "Welcome to my HTML5 local storage notepad! Notes typed here will be saved for next time!" ;
+    myTextarea.select() ;
   }
 }
 </script>
 <style>
 body {
   margin:0px;
-  padding:2%;
   background-color:#222;
   text-align:center;
 }
 textarea {
   resize:none;
   width:100%;
-  height:80%;
+  height:95%;
   background-color:inherit;
-  padding:2%;
+  padding:15px;
   font-family:'courier new';
   font-size:1.2em;
   color:#fff;
-  border-radius:.5em;
-}
-button {
-  width:200px;
-  font-size:1.5em;
-  margin:10px;
-  padding:10px;
-  border-radius:.5em;
-}
-div {
-  color:#ccc;
+  border:0px;
 }
 </style>
 <body onload="loadDoc()">
-<textarea id="myTextarea" autofocus wrap="hard"></textarea>
-<button id="myButton" onclick="saveDoc()">Save</button>
-<div id="messageDiv"></div>
+<textarea id="myTextarea" autofocus wrap="hard" onkeyup="saveDoc()" onchange="saveDoc()" onmouseout="saveDoc()" onload="var myTextarea = document.getElementById('myTextarea') ;"></textarea>
 </body>
-<script>
-var myTextarea = document.getElementById('myTextarea') ;
-var myButton = document.getElementById('myButton') ;
-var messageDiv = document.getElementById('messageDiv') ;
-</script>
 </html>
