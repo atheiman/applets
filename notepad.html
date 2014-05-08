@@ -7,11 +7,12 @@ function saveDoc() {
 }
 function loadDoc() {
   if (typeof localStorage.notepad !== "undefined" && localStorage.notepad !== "") {
+    // If user has never been here or saved data is blank
     myTextarea.value = localStorage.notepad ;
   } else {
-    myTextarea.value = "Welcome to HTML5 local storage notepad!\nNotes typed here will be saved for next time!\nTest it out by editing me and reloading the page!" ;
-    myTextarea.select() ;
+    myTextarea.value = "Welcome to Austin Heiman's HTML5 local storage notepad!\nNotes typed here will be automagically saved for next time!\nTest it out by editing me and reloading the page!" ;
   }
+  myTextarea.select() ;
 }
 </script>
 <style>
@@ -31,6 +32,6 @@ textarea {
 }
 </style>
 <body onload="loadDoc()">
-<textarea id="myTextarea" autofocus wrap="hard" onkeyup="saveDoc()" onchange="saveDoc()" onmouseout="saveDoc()" onload="var myTextarea = document.getElementById('myTextarea')"></textarea>
+<textarea id="myTextarea" onkeyup="saveDoc()" onchange="saveDoc()" onmouseout="saveDoc()" onload="var myTextarea = document.getElementById('myTextarea')"></textarea>
 </body>
 </html>
