@@ -1,6 +1,11 @@
 <html>
 <script>
 
+function checkTime(i) {
+  if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+
 function saveDoc() {
   var d = new Date() ;
   var monthArray = new Array();
@@ -27,25 +32,20 @@ function loadDoc() {
     myTextarea.value = localStorage.notepad ;
     messageDiv.innerHTML = "Loaded text from " + localStorage.saveString ;
   } else {
-    myTextarea.value = "Welcome to Austin Heiman's HTML5 local storage notepad!\nNotes typed here will be automagically saved for next time!" ;
+    myTextarea.value = "Welcome to Austin Heiman's HTML5 local storage notepad!\nNotes typed here will be auto-magically saved for next time!" ;
+    myTextarea.select() ;
     messageDiv.innerHTML = "Your text will be automatically saved." ;
   }
-  myTextarea.select() ;
   // messageDiv.style.opacity=0 ;
   // messageDiv.style.marginRight="100px";
-  messageDiv.style.right="-130px" ;
-}
-
-function checkTime(i) {
-    if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
-    return i;
+  messageDiv.style.right="-1000px" ;
 }
 
 </script>
 <style>
 body {
   margin:0px;
-  /*overflow:hidden;*/
+  overflow-x:hidden;
 }
 textarea {
   resize:none;
@@ -58,7 +58,7 @@ textarea {
   color:#fff;
   border:0px;
 }
-div {
+#messageDiv {
   position:absolute;
   background-color:#c50;
   bottom:20px;
@@ -69,7 +69,7 @@ div {
   font-size: 1.3em;
   border-radius: .5em ;
   cursor:default;
-  transition: right 3s;
+  transition: right 2s ease-in 4s;
   /*transition: margin-right 2s;*/
   /*transition: right 1s linear 2s;*/
   /*transition: opacity 3s;*/
