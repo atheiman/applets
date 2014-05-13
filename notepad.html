@@ -1,4 +1,7 @@
 <html>
+<head>
+<link rel="icon" type="image/gif" href="/notepad-icon.gif" />
+<!--<link rel="icon" href="/notepad-icon.ico" type="image/x-icon">-->
 <script>
 
 function checkTime(i) {
@@ -86,6 +89,7 @@ div:hover {
   background-color: #c0c;
 }
 </style>
+</head>
 <body onload="loadDoc()">
 <textarea id="myTextarea" autofocus onkeyup="saveDoc()" onmouseout="saveDoc()" onblur="saveDoc()" onload="var myTextarea = this; loadDoc();"></textarea>
 <div id="messageDiv" onload="var messageDiv = this" display="none">&nbsp;</div>
