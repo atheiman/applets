@@ -27,22 +27,28 @@ function saveDoc() {
   minute = checkTime(minute) ;
   localStorage.saveString = month+" "+date+" at "+hour+":"+minute+" "+timePeriod ;
   myTitle.innerHTML="Saved at " + hour+":"+minute ;
-  localStorage.notepad = myBody.innerHTML ;
+  localStorage.notepad = notepad.innerHTML ;
 }
 
 function loadDoc() {
   if (typeof localStorage.notepad !== "undefined" && localStorage.notepad !== "") {
-    // If user has never been here or saved data is blank
-    myBody.innerHTML = localStorage.notepad ;
+    // If user has been here before and their notepad was not empty when they left
+    notepad.innerHTML = localStorage.notepad ;
+    console.log('found previously saved notepad contents.') ;
   } else {
-    myBody.innerHTML = "Welcome to Austin Heiman's HTML5 localStorage notepad!\nNotes typed here will be auto-magically saved for next time!" ;
+    notepad.innerHTML = "Welcome to Austin Heiman's HTML5 localStorage notepad!\nNotes typed here will be auto-magically saved for next time!" ;
+    console.log('no previously saved notepad contents found.') ;
   }
-  myBody.focus() ;
+  notepad.focus() ;
+  console.log('notepad content loaded.') ;
 }
 
 </script>
 <style>
 body {
+  margin:0px;
+}
+#notepad {
   margin:0px;
   background-color:#111;
   color:#eee;
@@ -52,6 +58,7 @@ body {
 }
 </style>
 </head>
-<body id="myBody" contenteditable onload="var myBody=this ; loadDoc()" onkeyup="saveDoc()" onmouseout="saveDoc()" onblur="saveDoc()">
+<body onload="loadDoc(); ">
+<div id="notepad" contenteditable onload="var notepad=this ;" onkeyup="saveDoc()" onmouseout="saveDoc()" onblur="saveDoc()"></div>
 </body>
 </html>
