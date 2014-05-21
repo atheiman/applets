@@ -1,5 +1,6 @@
 <html>
 <head>
+<title id='title'>HTML5 Notepad</title>
 <link rel="icon" type="image/gif" href="/notepad-icon.gif" />
 <!--<link rel="icon" href="/notepad-icon.ico" type="image/x-icon">-->
 <script>
@@ -27,13 +28,14 @@ function saveDoc() {
   minute = checkTime(minute) ;
   localStorage.saveString = month+" "+date+" at "+hour+":"+minute+" "+timePeriod ;
   localStorage.notepad = myTextarea.value ;
+  document.getElementById('title').innerHTML = "Saved: " + localStorage.saveString ;
 }
 
 function loadDoc() {
   if (typeof localStorage.notepad !== "undefined" && localStorage.notepad !== "") {
     // If user has never been here or saved data is blank
     myTextarea.value = localStorage.notepad ;
-    messageDiv.innerHTML = "Loaded: " + localStorage.saveString ;
+    document.getElementById('title').innerHTML = "Loaded: " + localStorage.saveString ;
   } else {
     myTextarea.value = "Welcome to Austin Heiman's HTML5 localStorage notepad!\nNotes typed here will be auto-magically saved for next time!" ;
     myTextarea.select() ;
