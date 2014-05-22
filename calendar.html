@@ -1,8 +1,54 @@
 <html>
 <head>
 <title>HTML5 Calendar</title>
+<script>
+var weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+</script>
+<style>
+body {
+  background-color:#111;
+  color:#eee;
+  font-family:monospace;
+  font-size:1em;
+}
+#dayNamesRow .day {
+  height:auto;
+}
+div.week {
+  height:60px;
+}
+div.day {
+  float:left;
+  width:calc((100% / 7) - 2px);
+  height:100%;
+  border:1px solid white;
+  text-align:center;
+}
+</style>
 </head>
 <body>
+<div id='dayNamesRow'>
+<script>
+for (var weekdayNum = 0 ; weekdayNum < 7 ; weekdayNum++) {
+  document.write("<div class='day'>"+weekdays[weekdayNum]+"</div>") ;
+}
+</script>
+</div>
+<script>
+
+// Print out weeks full of days. 6 weeks and 42 slots for days
+var dayNum=0 ;
+for (var weekNum = 0 ; weekNum < 6 ; weekNum++) {
+  document.write("<div class='week'>") ;
+  for (var weekdayNum = 0 ; weekdayNum < 7 ; weekdayNum++) {
+    document.write("<div class='day "+dayNum+"'>"+dayNum+"</div>") ;
+    dayNum++ ;
+  }
+  document.write("</div>") ;
+}
+
+</script>
 
 </body>
 </html>
