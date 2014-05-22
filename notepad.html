@@ -11,6 +11,7 @@ function checkTime(i) {
 }
 
 function saveDoc() {
+  console.log("attempting to save document...") ;
   var d = new Date() ;
   var monthArray = new Array();
   monthArray[0] = "January"; monthArray[1] = "February"; monthArray[2] = "March"; monthArray[3] = "April";
@@ -26,19 +27,25 @@ function saveDoc() {
   }
   var minute = d.getMinutes() ;
   minute = checkTime(minute) ;
-  localStorage.saveString = month+" "+date+" at "+hour+":"+minute+" "+timePeriod ;
-  localStorage.notepad = myTextarea.value ;
-  document.getElementById('title').innerHTML = "Saved: " + localStorage.saveString ;
+  localStorage.notepadSaveString = month+" "+date+" at "+hour+":"+minute+" "+timePeriod ;
+  localStorage.notepadContent = myTextarea.value ;
+  document.getElementById('title').innerHTML = "Saved: " + localStorage.notepadSaveString ;
+  console.log("document saved with saveString "+localStorage.notepadSaveString+"\n") ;
 }
 
 function loadDoc() {
-  if (typeof localStorage.notepad !== "undefined" && localStorage.notepad !== "") {
+  console.log("attempting to load document...") ;
+  if (typeof localStorage.notepadContent !== "undefined" && localStorage.notepadContent !== "") {
     // If user has never been here or saved data is blank
-    myTextarea.value = localStorage.notepad ;
-    document.getElementById('title').innerHTML = "Loaded: " + localStorage.saveString ;
+    myTextarea.value = localStorage.notepadContent ;
+    document.getElementById('title').innerHTML = "Loaded: " + localStorage.notepadSaveString ;
+    console.log("document loaded from "+localStorage.notepadSaveString+"\n") ;
   } else {
+    localStorage.notepadContent = "" ;
+    localStorage.notepadSaveString = "" ;
     myTextarea.value = "Welcome to Austin Heiman's HTML5 localStorage notepad!\nNotes typed here will be auto-magically saved for next time!" ;
     myTextarea.select() ;
+    console.log("document not found\n") ;
   }
 }
 
