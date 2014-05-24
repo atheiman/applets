@@ -25,28 +25,67 @@ div.day {
   border:1px solid white;
   text-align:center;
 }
+#topMessage {
+  padding: 10px;
+  font-size: 2em;
+}
+.right {float:right;}
 </style>
 </head>
 <body>
-<div id='dayNamesRow'>
+
 <script>
+
+var months = [ "January" , "February" , "March" , "April" , "May" ,
+  "June" , "July" , "August" , "September" , "October" , "November" , "December" ]
+var today = new Date() ;
+var month = today.getMonth() ;
+var date = today.getDate() ;
+var weekday = today.getDay() ;
+document.write("<div id='topMessage'>" + months[month] + "<span class='right'>" + today.toLocaleDateString() +
+  "</span></div>") ;
+
+//show top row full of weekdays
+document.write("<div id='dayNamesRow'>") ;
 for (var weekdayNum = 0 ; weekdayNum < 7 ; weekdayNum++) {
   document.write("<div class='day'>"+weekdays[weekdayNum]+"</div>") ;
 }
-</script>
-</div>
-<script>
+document.write("</div>") ;
 
 // Print out weeks full of days. 6 weeks and 42 slots for days
 var dayNum=0 ;
 for (var weekNum = 0 ; weekNum < 6 ; weekNum++) {
   document.write("<div class='week'>") ;
   for (var weekdayNum = 0 ; weekdayNum < 7 ; weekdayNum++) {
-    document.write("<div class='day "+dayNum+"'>"+dayNum+"</div>") ;
+    document.write("<div class='day' id='day"+dayNum+"'></div>") ;
     dayNum++ ;
   }
   document.write("</div>") ;
 }
+
+//document.write( "month:" + month.toString() + " - date:" + date.toString() + " - weekday:" + weekday.toString() + "<br>" ) ;
+var dayOne = today ;
+dayOne.setDate(1) ;
+var dayOneWeekday = dayOne.getDay() ;
+//document.write( "day one weekday:" + dayOneWeekday + "<br>" ) ;
+var dayOneBox = document.getElementById("day" + dayOneWeekday) ;
+dayOneBox.style.backgroundColor = "yellow" ;
+var nextMonth = dayOne ;
+nextMonth.setMonth(month + 1) ;
+nextMonth.setDate(0) ;
+var numDays = nextMonth.getDate() ;
+//document.write("total days this month:" + numDays + "<br>") ;
+var colorVal = "222" ;
+for (var i = dayOneWeekday ; i < numDays + dayOneWeekday ; i++ ) {
+  thisBox = document.getElementById("day"+i) ;
+  thisBox.style.backgroundColor = "#"+colorVal ;
+  thisBox.innerHTML = i - dayOneWeekday + 1 ;
+}
+
+
+
+
+
 
 </script>
 
