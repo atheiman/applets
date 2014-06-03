@@ -13,20 +13,20 @@ function saveDoc() {
   console.log("attempting to save document...") ;
   var d = new Date() ;
   var monthArray = new Array();
-  monthArray[0] = "January"; monthArray[1] = "February"; monthArray[2] = "March"; monthArray[3] = "April";
-  monthArray[4] = "May"; monthArray[5] = "June"; monthArray[6] = "July"; monthArray[7] = "August";
-  monthArray[8] = "September"; monthArray[9] = "October"; monthArray[10] = "November"; monthArray[11] = "December";
+  monthArray[0] = "Jan"; monthArray[1] = "Feb"; monthArray[2] = "Mar"; monthArray[3] = "Apr";
+  monthArray[4] = "May"; monthArray[5] = "Jun"; monthArray[6] = "Jul"; monthArray[7] = "Aug";
+  monthArray[8] = "Sep"; monthArray[9] = "Oct"; monthArray[10] = "Nov"; monthArray[11] = "Dec";
   var month = monthArray[d.getMonth()];
   var date = d.getDate() ;
   var hour = d.getHours() ;
   var timePeriod = "am" ;
-  if (hour>12) {
+  if (hour >= 12) {
     hour -= 12 ;
     timePeriod = "pm" ;
   }
   var minute = d.getMinutes() ;
   minute = checkTime(minute) ;
-  localStorage.notepadSaveString = month+" "+date+" at "+hour+":"+minute+" "+timePeriod ;
+  localStorage.notepadSaveString = month+" "+date+", "+hour+":"+minute+" "+timePeriod ;
   localStorage.notepadContent = myTextarea.value ;
   document.getElementById('title').innerHTML = "Saved: " + localStorage.notepadSaveString ;
   console.log("document saved with saveString "+localStorage.notepadSaveString+"\n") ;
@@ -37,7 +37,7 @@ function loadDoc() {
   if (typeof localStorage.notepadContent !== "undefined" && localStorage.notepadContent !== "") {
     // If user has never been here or saved data is blank
     myTextarea.value = localStorage.notepadContent ;
-    document.getElementById('title').innerHTML = "Loaded: " + localStorage.notepadSaveString ;
+    document.getElementById('title').innerHTML = "Loaded from " + localStorage.notepadSaveString ;
     console.log("document loaded from "+localStorage.notepadSaveString+"\n") ;
   } else {
     localStorage.notepadContent = "" ;
