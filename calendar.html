@@ -4,13 +4,14 @@
 <link rel="icon" type="image/gif" href="/calendar-icon.gif" />
 <script>
 var weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var months = ["January","February","March","April","May","June",
+  "July","August","September","October","November","December"];
 var today = new Date();
 var thisYear = today.getFullYear();
 var thisMonth = months[today.getMonth()];
 var thisDate = today.getDate();
-
-var jan1 = new Date(thisYear,0,1);
+var thisWeekday = weekdays[today.getDay()];
+//alert("Welcome to HTML5 Calendar!\nToday is "+thisWeekday+", "+thisMonth+" "+thisDate+", "+thisYear+".");
 </script>
 <style>
 body {
@@ -18,44 +19,76 @@ body {
   padding:0px;
   background-color:#111;
   color:#eee;
-  font-family:monospace;
+  font-family:'arial';
   font-size:1em;
 }
-#calendar {
+#left_column {
   margin:0px;
   padding:0px;
   width:60%;
   height:100%;
   background-color:midnightblue;
-  overflow-y:scroll;
 }
-#notes {
+#right_column {
   margin:0px;
   padding:0px;
   width:40%;
   height:100%;
   background-color:maroon;
 }
+#upper_controls {
+  height:35px;
+  line-height:35px;
+}
+.week {
+  
+}
+.day {
+  width:calc((100% / 7) - (3px * 2));
+  height:calc(((100% - 35px) / 6) - (3px * 2));
+  text-align:center;
+  margin:3px 3px;
+  background-color:blue;
+  float:left;
+}
 .right {float:right;}
 .left {float:left;}
+.center {text-align:center;}
 </style>
 </head>
+
 <body>
+<div id='left_column' class='left '>
+  <div id='upper_controls' class='center'>
+    <button id='month_left_button'>&larr;</button>
+    <span id='month_year'>
+      <script>document.write(thisMonth+' '+thisYear);</script>
+    </span>
+    <button id='month_left_button'>&rarr;</button>
+  </div>
+  <div id='calendar'> 
+    <script>
+    var firstOfMonth = new Date(thisYear,today.getMonth(),1)
+    var lastOfMonth = firstOfMonth ;
+    lastOfMonth.setMonth(firstOfMonth.getMonth() + 1) ;
+    lastOfMonth.setDate(lastOfMonth.getDate() - 1) ;
+    // write blank date boxes equal to the number of the weekday of the 1st
+    console.log("Writing empty date boxes to indent to correct weekday") ;
+    for (i=1 ; i<firstOfMonth.getDay() ; i++) {
+      document.write("<span class='day'></span>") ;
+    }
+    // write out this month's days into date boxes
+    console.log("Writing date boxes for the month") ;
+    for (i=1 ; i<=lastOfMonth.getDate() ; i++) {
+      document.write("<span class='day' id='day"+i+"'>"+i+"</span>") ;
+    }
+    </script>
+  </div>
+</div> <!--End of left column-->
 
-<div id='calendar' class='left '>
-<script>
-
-</script>
-This is the calendar div. It is midnightblue.
+<div id='right_column' class='right '>
+  This is the notes div. It is maroon.
 </div>
-
-<div id='notes' class='right '>
-This is the notes div. It is maroon.
-</div>
-
-<script>
-
-</script>
 
 </body>
 </html>
