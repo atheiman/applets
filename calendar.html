@@ -3,92 +3,225 @@
 <title>HTML5 Calendar</title>
 <link rel="icon" type="image/gif" href="/calendar-icon.gif" />
 <script>
-var weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var months = ["January","February","March","April","May","June",
-  "July","August","September","October","November","December"];
-var today = new Date();
-var thisYear = today.getFullYear();
-var thisMonth = months[today.getMonth()];
-var thisDate = today.getDate();
-var thisWeekday = weekdays[today.getDay()];
-//alert("Welcome to HTML5 Calendar!\nToday is "+thisWeekday+", "+thisMonth+" "+thisDate+", "+thisYear+".");
+/*
+  Jun 24 1979: var myDate = new Date(79,5,24)
+  var myDate = new Date("October 13, 1975")
+  
+  for (i = 0; i < cars.length; i++) {
+      text += cars[i];
+  }
+*/
+var weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] ;
+var wkdys = ['Sun','Mon','Tues','Wed','Thur','Fri','Sat'] ;
+var months = ['January','February','March','April','May','June',
+'July','August','September','October','November','December'] ;
+
+var todayDate = new Date() ;
+var todayDateString = todayDate.toDateString() ;
+console.log("todayDateString: " + todayDateString) ;
+
+/*
+  var x = document.getElementById("mySelect");
+  var option = document.createElement("option");
+  option.text = "Kiwi";
+  x.add(option);
+*/
+
+function fillSelect() {
+  // month options for the select box, start 3 months prior to today
+  var monthYearSelect = document.getElementById('monthYearSelect') ;
+  var monthOption = new Date() ;
+  monthOption.setMonth(monthOption.getMonth() - 12)
+  for (i = 0 ; i < 37 ; i++) {
+    var myOptionString = months[monthOption.getMonth()] + " " + monthOption.getFullYear() ;
+    var myOption = document.createElement("option") ;
+    myOption.text = myOptionString ;
+    myOption.style.backgroundColor = '#111' ;
+    if (monthOption.getMonth() == todayDate.getMonth() && monthOption.getYear() == todayDate.getYear()) {
+      // this monthOption is the current month
+      myOption.selected = true ;
+      myOption.style.backgroundColor = '#640' ;
+    }
+    monthYearSelect.add(myOption) ;
+    monthOption.setMonth(monthOption.getMonth() + 1) ;
+  }
+  monthOption = new Date() ;
+  
+  console.log('filled monthYearSelect with month options') ;
+}
+
+function displayMonthYear(date) {
+  var monthYearString = months[date.getMonth()] + " " + date.getFullYear() ;
+  document.getElementById("monthYear").innerHTML = monthYearString ;
+  console.log('set monthYear heading to ' + monthYearString) ;
+}
+
+function getFirstDay(date) {
+  var myDate = date ;
+  myDate.setDate(1) ;
+  console.log("first day of month is " + weekdays[myDate.getDay()]) ;
+  return myDate.getDay() ;
+}
+
+function getFirstDate(date) {
+  // get first date of a month
+  var myDate = date ;
+  myDate.setDate(1) ;
+  return myDate ;
+}
+
+function getNumDays(date) {
+  // get numDays in a month
+  var myDate = date ;
+  myDate.setDate(1) ;
+  myDate.setMonth(myDate.getMonth() + 1) ;
+  myDate.setDate(myDate.getDate() - 1) ;
+  numDays = myDate.getDate() ;
+  console.log("numDays to print: " + numDays) ;
+  return numDays;
+}
+
+function printBlankDateBoxes(date) {
+  // print blank date boxes to indent the 1st date properly
+  var blankDateBoxes = getFirstDay(date) ;
+  console.log("printing " + blankDateBoxes + " blank date boxes.") ;
+  var blankDateBoxHTML = "<span class='dateBox' style='background-color:transparent;'>&nbsp;</span>" ;
+  var calendarDiv = document.getElementById("calendarDiv") ;
+  for (i = 0 ; i < blankDateBoxes ; i++) {
+    calendarDiv.innerHTML = calendarDiv.innerHTML + blankDateBoxHTML ;
+  }
+}
+
+function printDateBoxes(date) {
+  var calendarDiv = document.getElementById("calendarDiv") ;
+  var numDays = getNumDays(date) ;
+  var myDate = getFirstDate(date) ;
+  console.log('printing ' + numDays + ' date boxes, starting with date: ' + myDate.toDateString())
+  for (d = myDate.getDate() ; d <= numDays ; d++) {
+    // build the dateBox HTML into a string
+    var myDateString = myDate.toDateString() ;
+    var myId = myDateString.replace(/\s+/g, '') ;
+    // get the saved content from localStorage
+    var dBoxContent = returnDateBoxContent(myId) ;
+    var textAreaString = "<textarea class='dBoxTextArea' id='"+myId+"' rows='3' onchange='saveDateBoxContent(this.id)'>"+dBoxContent+"</textarea>" ;
+    // if the date box is today, display it differently
+    var todaySpecialString = "" ;
+    if (myDateString == todayDateString) {
+      todaySpecialString = " style='background-color:#640'" ;
+    }
+    var dateBoxHTML = "\
+      <span class='dateBox' title='"+myDateString+"'"+todaySpecialString+">"+
+      myDate.getDate()+"<br>"+textAreaString+"</span>" ;
+    // append the dateBoxHTML to the calendarDiv
+    calendarDiv.innerHTML = calendarDiv.innerHTML + dateBoxHTML ;
+    // console.log('printed date box: ' + myId) ;
+    // load any saved calContent from localStorage
+    myDate.setDate(myDate.getDate() + 1) ;
+  }
+}
+
+function saveDateBoxContent(dBoxId) {
+  var dBoxContent = document.getElementById(dBoxId).value ;
+  localStorage[dBoxId] = dBoxContent;
+  console.log(dBoxId + " = " + dBoxContent) ;
+}
+
+/*
+  Instead of:
+    eval('myvar' + num)
+  Use:
+    window['myvar' + num]
+  Instead of:
+    eval(codeToRun)
+  Use:
+    var tmpFunc = new Function(codeToRun);
+    tmpFunc();
+*/
+
+function returnDateBoxContent(dBoxId) {
+  if (typeof(localStorage[dBoxId]) !== "undefined" && localStorage[dBoxId] !== "") {
+    // localStorage.dBoxId exists and is not blank
+    return(localStorage[dBoxId]) ;
+  } else {
+    return "" ;
+  }
+}
+
+function main() {
+  var today = new Date()
+  console.log("loading calendar with today date: " + today.toDateString()) ;
+  displayMonthYear(today) ;
+  printBlankDateBoxes(today) ;
+  printDateBoxes(today) ;
+  fillSelect() ;
+  focusSelect() ;
+}
+
+function focusSelect() {
+  document.getElementById('monthYearSelect').focus() ;
+}
+
+function loadMonth(date) {
+  // Hande date objects or date strings
+  if (typeof(date) == 'string') {
+    // convert string to date object
+    date = new Date(date) ;
+  }
+  var calendarDiv = document.getElementById("calendarDiv") ;
+  calendarDiv.innerHTML = "" ;
+  displayMonthYear(date) ;
+  printBlankDateBoxes(date) ;
+  printDateBoxes(date) ;
+}
 </script>
 <style>
 body {
-  margin:0px;
-  padding:0px;
-  background-color:#111;
+  background-color:#000;
   color:#eee;
-  font-family:'arial';
-  font-size:1em;
+  font-family:arial;
+  font-size:100%;
+  Margin:0px;
 }
-#left_column {
-  margin:0px;
-  padding:0px;
-  width:60%;
-  height:100%;
-  background-color:midnightblue;
-}
-#right_column {
-  margin:0px;
-  padding:0px;
-  width:40%;
-  height:100%;
-  background-color:maroon;
-}
-#upper_controls {
-  height:35px;
-  line-height:35px;
-}
-.week {
-  
-}
-.day {
-  width:calc((100% / 7) - (3px * 2));
-  height:calc(((100% - 35px) / 6) - (3px * 2));
+#monthYear {
   text-align:center;
-  margin:3px 3px;
-  background-color:blue;
-  float:left;
+  margin:0px;
 }
-.right {float:right;}
-.left {float:left;}
-.center {text-align:center;}
+#monthYearSelect {
+  color:#eee;
+  background-color:transparent;
+  border:0px;
+  font-size:150%;
+  font-weight:bold;
+  text-align:center;
+  padding:10px;
+}
+.dateBox {
+  width:calc((100% / 7) - (2px * 2) - (2px * 2));
+  margin:2px;
+  padding:2px;
+  float:left;
+  text-align:center;
+  background-color:#222;
+}
+.dBoxTextArea {
+  width:100%;
+  resize:none;
+  border:0px;
+  color:inherit;
+  background-color:inherit;
+}
 </style>
 </head>
+<body onload="main()">
 
-<body>
-<div id='left_column' class='left '>
-  <div id='upper_controls' class='center'>
-    <button id='month_left_button'>&larr;</button>
-    <span id='month_year'>
-      <script>document.write(thisMonth+' '+thisYear);</script>
-    </span>
-    <button id='month_left_button'>&rarr;</button>
-  </div>
-  <div id='calendar'> 
-    <script>
-    var firstOfMonth = new Date(thisYear,today.getMonth(),1)
-    var lastOfMonth = firstOfMonth ;
-    lastOfMonth.setMonth(firstOfMonth.getMonth() + 1) ;
-    lastOfMonth.setDate(lastOfMonth.getDate() - 1) ;
-    // write blank date boxes equal to the number of the weekday of the 1st
-    console.log("Writing empty date boxes to indent to correct weekday") ;
-    for (i=1 ; i<firstOfMonth.getDay() ; i++) {
-      document.write("<span class='day'></span>") ;
-    }
-    // write out this month's days into date boxes
-    console.log("Writing date boxes for the month") ;
-    for (i=1 ; i<=lastOfMonth.getDate() ; i++) {
-      document.write("<span class='day' id='day"+i+"'>"+i+"</span>") ;
-    }
-    </script>
-  </div>
-</div> <!--End of left column-->
+<select
+  id='monthYearSelect'
+  onchange='loadMonth(this.value)'>
+</select>
 
-<div id='right_column' class='right '>
-  This is the notes div. It is maroon.
-</div>
+<h2 id='monthYear' style='display:none;'></h2>
+
+<div id='calendarDiv'></div>
 
 </body>
 </html>
