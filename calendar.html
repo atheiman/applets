@@ -41,6 +41,19 @@ function getFirstDay(date) {
   return myDate.getDay() ;
 }
 
+function cycleMonth(direction) {
+  var mySelect = document.getElementById('monthYearSelect') ;
+  var currentMonth = new Date(mySelect.value) ;
+  if (direction === "forward") {
+    currentMonth.setMonth(currentMonth.getMonth() + 1);
+    mySelect.selectedIndex += 1 ;
+  } else if (direction === "back") {
+    currentMonth.setMonth(currentMonth.getMonth() - 1);
+    mySelect.selectedIndex -= 1 ;
+  }
+  loadMonth(currentMonth) ;
+}
+
 function getFirstDate(date) {
   // get first date of a month
   var myDate = date ;
