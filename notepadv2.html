@@ -1,0 +1,104 @@
+<html>
+<head>
+<title id='title'>HTML5 Notepad</title>
+<link rel="icon" type="image/gif" href="/notepad-icon.gif" />
+<script>
+
+/*
+
+Because localStorage only allows key/value pairs, I cannot create objects for notebooks with title and content properties. The title of a notebook will have to be the first 15 or so chars of the content. Therefore to change the notebook title, the user simply opens the notebook and changes the first line.
+
+The 'key' of each key/value pair will be like "notebook0", "notebook1", ... and the 'value' will be the content. The id of the tabs will be the same as the key used ("notebook0", "notebook1", ...). This means there should be no renaming the keys, only adding and removing. Adding a notebook will simply add a notebook with the next logical id.
+
+// Store
+localStorage.setItem("lastname", "Smith");
+// Retrieve
+localStorage.getItem("lastname");
+// Remove
+localStorage.removeItem("lastname");
+
+*/
+
+function main() {
+  
+}
+
+function selectTab(notebookId) {
+  var tabsList = document.getElementsByClassName('tab') ;
+  for (i = 0 ; i < tabsList.length ; i++) {
+    tabsList[i].className = "tab" ;
+  }
+  document.getElementById(notebookId).className += " selectedTab" ;
+}
+
+</script>
+<style>
+
+body {
+  background-color:#111;
+  color:#eee;
+  font-family:monospace;
+  font-size:100%;
+  Margin:0px;
+}
+
+#tabsContainer {
+  background-color:#333;
+  display:inline-block;
+  height:100%;
+  width:25%;
+  float:left;
+}
+
+.tab {
+  background-color:#555;
+  font-size:115%;
+  padding:5px;
+  border-right:10px solid transparent;
+  margin:5px 0px;
+  cursor:pointer;
+}
+
+.selectedTab {
+  border-right:10px solid #f90;
+}
+
+#notepad {
+  resize:none;
+  height:100%;
+  width:75%;
+  margin:0px;
+  padding:5px;
+  background-color:#033;
+  color:inherit;
+  border:0px;
+}
+
+</style>
+</head>
+
+<body onload="">
+
+<div id='tabsContainer'>
+  
+  <div class='tab'
+    id='0'
+    onclick="selectTab(this.id)"
+    ondblclick="renameNotebook(this.id)">Geography</div>
+  <div class='tab'
+    id='1'
+    onclick="selectTab(this.id)"
+    ondblclick="renameNotebook(this.id)">Systems Administration</div>
+  <div class='tab selectedTab'
+    id='2'
+    onclick="selectTab(this.id)"
+    ondblclick="renameNotebook(this.id)">Intro to C++</div>
+  
+</div>
+
+<textarea id='notepad'>
+This is the content of the note.
+</textarea>
+
+</body>
+</html>
