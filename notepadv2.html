@@ -6,9 +6,12 @@
 
 /*
 
+Future features:
+  - Split the content and the title into an input box above the textarea and the textarea based on the string.split('\n')[0] and string.split('\n')[1]
+
 Because localStorage only allows key/value pairs, I cannot create objects for notebooks with title and content properties. The title of a notebook will have to be the first 15 or so chars of the content. Therefore to change the notebook title, the user simply opens the notebook and changes the first line.
 
-The 'key' of each key/value pair will be like "notebook0", "notebook1", ... and the 'value' will be the content. The id of the tabs will be the same as the key used ("notebook0", "notebook1", ...). This means there should be no renaming the keys, only adding and removing. Adding a notebook will simply add a notebook with the next logical id.
+The 'key' of each key/value pair will be like "notebook_0", "notebook_1", ... and the 'value' will be the content. The id of the tabs will be the same as the key used ("notebook_0", "notebook_1", ...). This means there should be no renaming the keys, only adding and removing. Adding a notebook will simply add a notebook with the next logical id.
 
 // Store
 localStorage.setItem("lastname", "Smith");
@@ -19,8 +22,77 @@ localStorage.removeItem("lastname");
 
 */
 
+// localStorage.removeItem("notebookCount") ;
+
+/*
+// Testing settings / reset the browser
+for (var key in localStorage) {
+  var myIndex = key.indexOf("notebook_") ;
+  if (myIndex !== -1) {
+    localStorage.removeItem(key) ;
+    console.log("removed localStorage item: " + key) ;
+  }
+}
+*/
+if (typeof(localStorage.notebookCount) === "undefined") {
+  // first time to site, set up with example notebooks and alert of what they are using
+  firstTimer = true ;
+  console.log("first time user detected. setting example notebooks, notebookCount, and selectedTab vars.") ;
+  localStorage.notebook_0 = "Geography\nI took these notes in my Geography class!" ;
+  localStorage.notebook_1 = "Systems Administration\nHere are some notes on Bash Scripting" ;
+  localStorage.notebook_2 = "Intro to C++\nOne day I will build a functional C++ program." ;
+  localStorage.notebookCount = "3" ;
+  localStorage.selectedTab = "notebook_1" ;
+}
+
+
 function main() {
-  
+  var tabsContainer = document.getElementById("tabsContainer") ;
+  var notepad = document.getElementById("notepad") ;
+  var idsArray = [] ;
+  for (var key in localStorage) {
+    var myIndex = key.indexOf("notebook_") ;
+    if (myIndex === 0) {
+      idsArray.push(key) ;
+    }
+  }
+  var tabsContainerInnerHTML = "" ;
+  // load title of each notepad into the tabsContainer
+  for (var i = 0 ; i < localStorage.notebookCount ; i++) {
+    var notebookId = idsArray[i] ;
+    var title = getTitle(localStorage[notebookId]) ;
+    tabHTML = "<div class='tab' id='"+notebookId+"' onclick='selectTab(this.id)'>"+title+"</div>" ;
+    tabsContainerInnerHTML += tabHTML ;
+  }
+  tabsContainer.innerHTML = tabsContainerInnerHTML ;
+  selectTab(localStorage.selectedTab) ;
+  if (typeof(firstTimer) !== "undefined" && firstTimer === true) {
+    var alertString = "Welcome to Austin Heiman's HTML5 notepad. This is a tabbed notepad that runs in your browser!" ;
+    alert(alertString) ;
+  }
+}
+
+function saveContent(notebookId) {
+  // save notepad content to localStorage
+  var notepad = document.getElementById("notepad") ;
+  localStorage[notebookId] = notepad.value ;
+  // update tab title in case first line of notepad has changed
+  loadNotebookTitle(notebookId) ;
+  console.log(notebookId + "saved") ;
+}
+
+function getGreatestNotebookId() {
+  var idsArray = [] ;
+  for (var key in localStorage) {
+    var myIndex = key.indexOf("notebook_") ;
+    if (myIndex === 0) {
+      var number = key.split("_")[1] ;
+      idsArray.push(number) ;
+    }
+  }
+  var greatest = Math.max.apply(Math, idsArray);
+  console.log("returning " + greatest + " as current greatest id") ;
+  return greatest ;
 }
 
 function selectTab(notebookId) {
@@ -29,6 +101,40 @@ function selectTab(notebookId) {
     tabsList[i].className = "tab" ;
   }
   document.getElementById(notebookId).className += " selectedTab" ;
+  localStorage.selectedTab = notebookId ;
+  loadContent(notebookId) ;
+  console.log(notebookId + " selected") ;
+}
+
+function loadContent(notebookId) {
+  var notepad = document.getElementById('notepad') ;
+  var content = localStorage.getItem(notebookId) ;
+  notepad.value = content ;
+}
+
+function loadNotebookTitle(notebookId) {
+  // first line of content is title
+  var content = localStorage[notebookId] ;
+  var firstLine = content.split('\n')[0];
+  var tab = document.getElementById(notebookId) ;
+  tab.innerHTML = firstLine ;
+}
+
+function getTitle(content) {
+  var firstLine = content.split('\n')[0];
+  return firstLine ;
+}
+
+function deleteNotebook(notebookId) {
+  localStorage.removeItem(notebookId) ;
+  localStorage.notebookCount-- ;
+}
+
+function addNotebook() {
+  var greatest = getGreatestNotebookId() ;
+  greatest++ ;
+  localStorage.setItem("notebook_" + greatest) ;
+  localStorage.notebookCount++ ;
 }
 
 </script>
@@ -54,8 +160,9 @@ body {
   background-color:#555;
   font-size:115%;
   padding:5px;
+  margin:5px;
+  /*margin:5px 0px;*/
   border-right:10px solid transparent;
-  margin:5px 0px;
   cursor:pointer;
 }
 
@@ -77,27 +184,18 @@ body {
 </style>
 </head>
 
-<body onload="">
+<body onload="main()">
 
 <div id='tabsContainer'>
-  
-  <div class='tab'
-    id='0'
-    onclick="selectTab(this.id)"
-    ondblclick="renameNotebook(this.id)">Geography</div>
-  <div class='tab'
-    id='1'
-    onclick="selectTab(this.id)"
-    ondblclick="renameNotebook(this.id)">Systems Administration</div>
-  <div class='tab selectedTab'
-    id='2'
-    onclick="selectTab(this.id)"
-    ondblclick="renameNotebook(this.id)">Intro to C++</div>
-  
+  <!--
+  <div class='tab' id='notebook_0' onclick="selectTab(this.id)">Geography</div>
+  <div class='tab' id='notebook_1' onclick="selectTab(this.id)">Systems Administration</div>
+  <div class='tab selectedTab' id='notebook_2' onclick="selectTab(this.id)">Intro to C++</div>
+  -->
 </div>
 
-<textarea id='notepad'>
-This is the content of the note.
+<textarea id='notepad' onkeyup="saveContent(localStorage.selectedTab)">
+<!--This is the content of the note.-->
 </textarea>
 
 </body>
