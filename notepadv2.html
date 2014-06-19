@@ -45,17 +45,12 @@ if (typeof(localStorage.notebookCount) === "undefined") {
   localStorage.selectedTab = "notebook_1" ;
 }
 
-
 function main() {
   var tabsContainer = document.getElementById("tabsContainer") ;
   var notepad = document.getElementById("notepad") ;
-  var idsArray = [] ;
-  for (var key in localStorage) {
-    var myIndex = key.indexOf("notebook_") ;
-    if (myIndex === 0) {
-      idsArray.push(key) ;
-    }
-  }
+  // fill idsArray with notebook numbers
+  idsArray = getIdsArray() ;
+  // clear tabs container
   var tabsContainerInnerHTML = "" ;
   // load title of each notepad into the tabsContainer
   for (var i = 0 ; i < localStorage.notebookCount ; i++) {
@@ -70,6 +65,17 @@ function main() {
     var alertString = "Welcome to Austin Heiman's HTML5 notepad. This is a tabbed notepad that runs in your browser!" ;
     alert(alertString) ;
   }
+}
+
+function getIdsArray() {
+  var idsArray = [] ;
+  for (var key in localStorage) {
+    var myIndex = key.indexOf("notebook_") ;
+    if (myIndex === 0) {
+      idsArray.push(key) ;
+    }
+  }
+  return(idsArray) ;
 }
 
 function saveContent(notebookId) {
@@ -95,6 +101,20 @@ function getGreatestNotebookId() {
   return greatest ;
 }
 
+function getLowestNotebookId() {
+  var idsArray = [] ;
+  for (var key in localStorage) {
+    var myIndex = key.indexOf("notebook_") ;
+    if (myIndex === 0) {
+      var number = key.split("_")[1] ;
+      idsArray.push(number) ;
+    }
+  }
+  var greatest = Math.min.apply(Math, idsArray);
+  console.log("returning " + greatest + " as current greatest id") ;
+  return greatest ;
+}
+
 function selectTab(notebookId) {
   var tabsList = document.getElementsByClassName('tab') ;
   for (i = 0 ; i < tabsList.length ; i++) {
@@ -104,6 +124,7 @@ function selectTab(notebookId) {
   localStorage.selectedTab = notebookId ;
   loadContent(notebookId) ;
   console.log(notebookId + " selected") ;
+  document.getElementById('notepad').focus() ;
 }
 
 function loadContent(notebookId) {
@@ -126,15 +147,23 @@ function getTitle(content) {
 }
 
 function deleteNotebook(notebookId) {
-  localStorage.removeItem(notebookId) ;
-  localStorage.notebookCount-- ;
+  var title = getTitle(notebookId) ;
+  var myConfirm = confirm('Are you sure you would like to delete notebook ') ;
+  if (myConfirm) {
+    localStorage.removeItem(notebookId) ;
+    localStorage.notebookCount-- ;
+    selectTab("notebook_" + getLowestNotebookId()) ;
+    console.log("executing main()") ;
+    main() ;
+  }
 }
 
 function addNotebook() {
   var greatest = getGreatestNotebookId() ;
   greatest++ ;
-  localStorage.setItem("notebook_" + greatest) ;
+  localStorage.setItem("notebook_" + greatest , "New Notebook") ;
   localStorage.notebookCount++ ;
+  main() ;
 }
 
 </script>
@@ -144,7 +173,6 @@ body {
   background-color:#111;
   color:#eee;
   font-family:monospace;
-  font-size:100%;
   Margin:0px;
 }
 
@@ -154,14 +182,13 @@ body {
   height:100%;
   width:25%;
   float:left;
+  font-size:1.15em;
 }
 
 .tab {
   background-color:#555;
-  font-size:115%;
   padding:5px;
   margin:5px;
-  /*margin:5px 0px;*/
   border-right:10px solid transparent;
   cursor:pointer;
 }
@@ -179,6 +206,7 @@ body {
   background-color:#033;
   color:inherit;
   border:0px;
+  font-size:1.15em;
 }
 
 </style>
