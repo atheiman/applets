@@ -194,10 +194,14 @@ body {
 </head>
 <body onload="main()">
 
+<button id='back' onclick="cycleMonth('back')">Back</button>
+
 <select
   id='monthYearSelect'
   onchange='loadMonth(this.value)'>
 </select>
+
+<button id='forward' onclick="cycleMonth('forward')">Forward</button>
 
 <div id='weekdayDiv'>
   <script>

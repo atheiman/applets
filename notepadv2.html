@@ -39,16 +39,14 @@ for (var key in localStorage) {
 welcomeMessage = "Welcome to HTML5 Notepad by Austin Heiman\n\
     Your notebooks appear on the left, and the content appears here. Your changes are saved automatically as you type. There's almost no limit to what you create!" ;
 
-if (typeof(localStorage.notebookCount) === "undefined") {
+//if (typeof(localStorage.notebookCount) === "undefined") {
   // first time to site, set up with example notebooks and alert of what they are using
   removeAllNotebooks() ;
   console.log("first time user detected. setting example notebooks, notebookCount, and selectedTab vars.") ;
-  localStorage.notebook_0 = "Geography\nI took these notes in my Geography class!" ;
-  localStorage.notebook_1 = "Systems Administration\nHere are some notes on Bash Scripting" ;
-  localStorage.notebook_2 = "Intro to C++\nOne day I will build a functional C++ program." ;
-  localStorage.notebookCount = "3" ;
-  localStorage.selectedTab = "notebook_1" ;
-}
+  localStorage.notebook_0 = welcomeMessage ;
+  localStorage.notebookCount = "1" ;
+  localStorage.selectedTab = "notebook_0" ;
+//}
 
 function main() {
   var tabsContainer = document.getElementById("tabsContainer") ;
@@ -64,10 +62,13 @@ function main() {
     var tabHTML = "<div class='tab' id='"+notebookId+"' onclick='selectTab(this.id)'>"+title+"</div>" ;
     tabsContainerInnerHTML += tabHTML ;
   }
+  // if only one notebook, do not display delete icon
   var buttonsHTML = "<center>\
-  <span class='mega-octicon octicon-diff-added' onclick='addNotebook()'></span>\
-  <span class='mega-octicon octicon-trashcan' onclick='deleteNotebook(localStorage.selectedTab)'></span>\
-  </center>"
+    <span class='mega-octicon octicon-diff-added' onclick='addNotebook()'></span>" ;
+  if (localStorage.notebookCount != 1) {
+    buttonsHTML += "<span class='mega-octicon octicon-trashcan' onclick='deleteNotebook(localStorage.selectedTab)'></span>" ;
+  }
+  buttonsHTML += "</center>" ;
   tabsContainerInnerHTML += buttonsHTML ;
   tabsContainer.innerHTML = tabsContainerInnerHTML ;
   selectTab(localStorage.selectedTab) ;
