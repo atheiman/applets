@@ -39,14 +39,14 @@ for (var key in localStorage) {
 welcomeMessage = "Welcome to HTML5 Notepad by Austin Heiman\n\
     Your notebooks appear on the left, and the content appears here. Your changes are saved automatically as you type. There's almost no limit to what you create!" ;
 
-//if (typeof(localStorage.notebookCount) === "undefined") {
+if (typeof(localStorage.notebookCount) === "undefined") {
   // first time to site, set up with example notebooks and alert of what they are using
   removeAllNotebooks() ;
   console.log("first time user detected. setting example notebooks, notebookCount, and selectedTab vars.") ;
   localStorage.notebook_0 = welcomeMessage ;
   localStorage.notebookCount = "1" ;
   localStorage.selectedTab = "notebook_0" ;
-//}
+}
 
 function main() {
   var tabsContainer = document.getElementById("tabsContainer") ;
