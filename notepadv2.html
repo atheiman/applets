@@ -2,6 +2,7 @@
 <head>
 <title id='title'>HTML5 Notepad</title>
 <link rel="icon" type="image/gif" href="/notepad-icon.gif" />
+<link rel="stylesheet" href="./octicons/octicons.css">
 <script>
 
 /*
@@ -34,9 +35,13 @@ for (var key in localStorage) {
   }
 }
 */
+
+welcomeMessage = "Welcome to HTML5 Notepad by Austin Heiman\n\
+    Your notebooks appear on the left, and the content appears here. Your changes are saved automatically as you type. There's almost no limit to what you create!" ;
+
 if (typeof(localStorage.notebookCount) === "undefined") {
   // first time to site, set up with example notebooks and alert of what they are using
-  firstTimer = true ;
+  removeAllNotebooks() ;
   console.log("first time user detected. setting example notebooks, notebookCount, and selectedTab vars.") ;
   localStorage.notebook_0 = "Geography\nI took these notes in my Geography class!" ;
   localStorage.notebook_1 = "Systems Administration\nHere are some notes on Bash Scripting" ;
@@ -49,31 +54,36 @@ function main() {
   var tabsContainer = document.getElementById("tabsContainer") ;
   var notepad = document.getElementById("notepad") ;
   // fill idsArray with notebook numbers
-  idsArray = getIdsArray() ;
+  var idsArray = getIdsArray() ;
   // clear tabs container
   var tabsContainerInnerHTML = "" ;
   // load title of each notepad into the tabsContainer
   for (var i = 0 ; i < localStorage.notebookCount ; i++) {
     var notebookId = idsArray[i] ;
     var title = getTitle(localStorage[notebookId]) ;
-    tabHTML = "<div class='tab' id='"+notebookId+"' onclick='selectTab(this.id)'>"+title+"</div>" ;
+    var tabHTML = "<div class='tab' id='"+notebookId+"' onclick='selectTab(this.id)'>"+title+"</div>" ;
     tabsContainerInnerHTML += tabHTML ;
   }
+  var buttonsHTML = "<center>\
+  <span class='mega-octicon octicon-diff-added' onclick='addNotebook()'></span>\
+  <span class='mega-octicon octicon-trashcan' onclick='deleteNotebook(localStorage.selectedTab)'></span>\
+  </center>"
+  tabsContainerInnerHTML += buttonsHTML ;
   tabsContainer.innerHTML = tabsContainerInnerHTML ;
   selectTab(localStorage.selectedTab) ;
-  if (typeof(firstTimer) !== "undefined" && firstTimer === true) {
-    var alertString = "Welcome to Austin Heiman's HTML5 notepad. This is a tabbed notepad that runs in your browser!" ;
-    alert(alertString) ;
+}
+
+function removeAllNotebooks() {
+  var idsArray = getIdsArray() ;
+  for (var i=0 ; i < idsArray.length ; i++) {
+    localStorage.removeItem(idsArray[i]) ;
   }
 }
 
 function getIdsArray() {
-  var idsArray = [] ;
-  for (var key in localStorage) {
-    var myIndex = key.indexOf("notebook_") ;
-    if (myIndex === 0) {
-      idsArray.push(key) ;
-    }
+  var idsArray = getIdNumbersArray() ;
+  for (var i = 0 ; i < idsArray.length ; i++) {
+    idsArray[i] = "notebook_" + idsArray[i] ;
   }
   return(idsArray) ;
 }
@@ -87,39 +97,40 @@ function saveContent(notebookId) {
   console.log(notebookId + "saved") ;
 }
 
-function getGreatestNotebookId() {
-  var idsArray = [] ;
+// get digits from string
+// var r = /\d+/
+
+function getIdNumbersArray() {
+  var idNumbersArray = [] ;
   for (var key in localStorage) {
     var myIndex = key.indexOf("notebook_") ;
     if (myIndex === 0) {
       var number = key.split("_")[1] ;
-      idsArray.push(number) ;
+      idNumbersArray.push(number) ;
     }
   }
-  var greatest = Math.max.apply(Math, idsArray);
-  console.log("returning " + greatest + " as current greatest id") ;
-  return greatest ;
+  console.log('idNumbersArray: ' + idNumbersArray) ;
+  return idNumbersArray ;
 }
 
-function getLowestNotebookId() {
-  var idsArray = [] ;
-  for (var key in localStorage) {
-    var myIndex = key.indexOf("notebook_") ;
-    if (myIndex === 0) {
-      var number = key.split("_")[1] ;
-      idsArray.push(number) ;
-    }
+function getNotebookIdNumber(position) {
+  var idsArray = getIdNumbersArray() ;
+  if (position === "greatest") {
+    var returnValue = Math.max.apply(Math, idsArray);
+  } else if (position === "least") {
+    var returnValue = Math.min.apply(Math, idsArray);
   }
-  var greatest = Math.min.apply(Math, idsArray);
-  console.log("returning " + greatest + " as current greatest id") ;
-  return greatest ;
+  console.log("returning " + returnValue + " notebookId as " + position + " value") ;
+  return returnValue ;
 }
 
 function selectTab(notebookId) {
+  // reset all tab classes to remove ' selectedTab' from the selected tab
   var tabsList = document.getElementsByClassName('tab') ;
   for (i = 0 ; i < tabsList.length ; i++) {
     tabsList[i].className = "tab" ;
   }
+  // add ' selectedTab' to the selected tab classes
   document.getElementById(notebookId).className += " selectedTab" ;
   localStorage.selectedTab = notebookId ;
   loadContent(notebookId) ;
@@ -152,16 +163,19 @@ function deleteNotebook(notebookId) {
   if (myConfirm) {
     localStorage.removeItem(notebookId) ;
     localStorage.notebookCount-- ;
-    selectTab("notebook_" + getLowestNotebookId()) ;
+    selectTab("notebook_" + getNotebookIdNumber('least')) ;
     console.log("executing main()") ;
     main() ;
   }
 }
 
 function addNotebook() {
-  var greatest = getGreatestNotebookId() ;
+  var greatest = getNotebookIdNumber('greatest') ;
   greatest++ ;
-  localStorage.setItem("notebook_" + greatest , "New Notebook") ;
+  var newNotebookId = "notebook_" + greatest ;
+  localStorage.setItem(newNotebookId , "New Notebook") ;
+  console.log('created item ' + newNotebookId + ' with value ' + localStorage[newNotebookId]) ;
+  localStorage.selectedTab = newNotebookId ;
   localStorage.notebookCount++ ;
   main() ;
 }
@@ -209,22 +223,19 @@ body {
   font-size:1.15em;
 }
 
+span {
+  cursor:pointer;
+  padding:5px;
+}
+
 </style>
 </head>
 
 <body onload="main()">
 
-<div id='tabsContainer'>
-  <!--
-  <div class='tab' id='notebook_0' onclick="selectTab(this.id)">Geography</div>
-  <div class='tab' id='notebook_1' onclick="selectTab(this.id)">Systems Administration</div>
-  <div class='tab selectedTab' id='notebook_2' onclick="selectTab(this.id)">Intro to C++</div>
-  -->
-</div>
+<div id='tabsContainer'></div>
 
-<textarea id='notepad' onkeyup="saveContent(localStorage.selectedTab)">
-<!--This is the content of the note.-->
-</textarea>
+<textarea id='notepad' onkeyup="saveContent(localStorage.selectedTab)"></textarea>
 
 </body>
 </html>
