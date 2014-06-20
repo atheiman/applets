@@ -159,8 +159,8 @@ function getTitle(content) {
 }
 
 function deleteNotebook(notebookId) {
-  var title = getTitle(notebookId) ;
-  var myConfirm = confirm('Are you sure you would like to delete notebook ') ;
+  var title = getTitle(localStorage[notebookId]) ;
+  var myConfirm = confirm("Are you sure you would like to delete notebook '" + title + "'") ;
   if (myConfirm) {
     localStorage.removeItem(notebookId) ;
     localStorage.notebookCount-- ;
