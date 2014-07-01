@@ -1,0 +1,64 @@
+<html>
+<head>
+<title id='title'>Spreeder</title>
+<link rel="icon" type="image/gif" href="/notepad-icon.gif" />
+<link rel="stylesheet" href="./octicons/octicons.css">
+<script>
+
+function spreed() {
+  var myString = textarea.value ;
+  spaceArray = returnSpaceArray(myString) ;
+  var interval = 1000 ;
+  console.log("spreeding through spaceArray: " + spaceArray + " with interval " + interval + " ms") ;
+  for (i = 0 ; i < spaceArray.length ; i++) {
+    console.log(spaceArray[i]) ;
+    setTimeout(function(){console.log(i) ; display(spaceArray[i])} , interval * (i + 1)) ;
+  }
+}
+
+function returnSpaceArray(text) {
+  var spaceArray = text.split(" ");
+  console.log("returning spaceArray: " + spaceArray) ;
+  return spaceArray ;
+}
+
+/*
+<button onclick = "setTimeout(function(){alert('Hello')},3000)">Try it</button>
+*/
+
+function display(text) {
+  console.log("displaying " + text) ;
+  displayDiv.innerHTML = text ;
+}
+
+</script>
+<style>
+
+textarea {
+  display:block;
+  width:100%;
+  height:30%;
+  resize:none;
+}
+
+#displayDiv {
+  text-align:center;
+  font-size:2em;
+  height:2em;
+}
+
+</style>
+</head>
+
+<body onload="displayDiv = document.getElementById('displayDiv') ; textarea = document.getElementById('textarea') ;">
+
+<textarea id='textarea' onload="">This is a spreeding site. The goal is to read faster by ignoring the voice in your head and simply processing the words. Have fun, and don't forget to donate!</textarea>
+
+<div id='displayDiv'>someword</div>
+
+<center>
+<button onclick="spreed()">Spreed It!</button>
+</center>
+
+</body>
+</html>
