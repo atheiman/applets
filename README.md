@@ -5,7 +5,7 @@ Simple html5 / javascript web apps
 
 Examples at:
 
-[athksuaws.no-ip.org/notepad](http://athksuaws.no-ip.org/notepad)
+[athksuaws.no-ip.org/notepad](http://athksuaws.no-ip.org/notepadv2)
 
 and
 
